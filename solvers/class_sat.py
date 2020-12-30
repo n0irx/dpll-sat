@@ -165,10 +165,10 @@ def main():
     if solution:
         solution += [x for x in range(1, formula.n_vars + 1) if x not in solution and -x not in solution]
         solution.sort(key=lambda x: abs(x))
-        print 's SATISFIABLE'
-        print 'v ' + ' '.join([str(x) for x in solution]) + ' 0'
+        print('s SATISFIABLE')
+        print('v ' + ' '.join([str(x) for x in solution]) + ' 0')
     else:
-        print 's UNSATISFIABLE'
+        print('s UNSATISFIABLE')
 
 
 if __name__ == '__main__':

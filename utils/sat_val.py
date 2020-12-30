@@ -43,10 +43,10 @@ def main():
     solution = parse_solution(sys.argv[2])
     if solution:
         formula = parse_formula(sys.argv[1])
-        print test_formula(formula, solution)
+        print(test_formula(formula, solution))
 
     else:
-        print 'Not able to validate UNSAT'
+        print('Not able to validate UNSAT')
 
 
 if __name__ == '__main__':

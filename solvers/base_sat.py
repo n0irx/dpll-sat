@@ -114,7 +114,7 @@ def unit_propagation(formula):
 
 
 def backtracking(formula, assignment, heuristic):
-    # print assignment
+    # print(assignment)
     # formula, pure_assignment = pure_literal(formula)
     formula, unit_assignment = unit_propagation(formula)
     assignment = assignment + unit_assignment # + pure_assignment
@@ -210,10 +210,10 @@ def main():
     if solution:
         solution += [x for x in range(1, n_vars + 1) if x not in solution and -x not in solution]
         solution.sort(key=abs)
-        print 's SATISFIABLE'
-        print 'v ' + ' '.join([str(x) for x in solution]) + ' 0'
+        print('s SATISFIABLE')
+        print('v ' + ' '.join([str(x) for x in solution]) + ' 0')
     else:
-        print 's UNSATISFIABLE'
+        print('s UNSATISFIABLE')
 
 if __name__ == '__main__':
     main()

@@ -71,8 +71,14 @@ def unit_propagation(formula):
 
 
 def variable_selection(formula):
+    formula = [f for f in formula if f != []]
     counter = get_counter(formula)
-    return random.choice(counter.keys())
+    counter_keys = counter.keys()
+    if counter_keys == []:
+        return []
+    else :
+        choice = random.choice(counter_keys)
+        return choice
 
 
 def backtracking(formula, assignment):
@@ -84,7 +90,10 @@ def backtracking(formula, assignment):
     if not formula:
         return assignment
 
-    variable = variable_selection(formula)
+    variable = [] 
+    while variable == []:
+        variable = variable_selection(formula)
+
     solution = backtracking(bcp(formula, variable), assignment + [variable])
     if not solution:
         solution = backtracking(bcp(formula, -variable), assignment + [-variable])
@@ -97,10 +106,10 @@ def main():
     if solution:
         solution += [x for x in range(1, nvars + 1) if x not in solution and -x not in solution]
         solution.sort(key=lambda x: abs(x))
-        print 's SATISFIABLE'
-        print 'v ' + ' '.join([str(x) for x in solution]) + ' 0'
+        print('s SATISFIABLE')
+        print('v ' + ' '.join([str(x) for x in solution]) + ' 0')
     else:
-        print 's UNSATISFIABLE'
+        print('s UNSATISFIABLE')
 
 
 if __name__ == '__main__':
