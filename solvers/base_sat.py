@@ -115,9 +115,11 @@ def unit_propagation(formula):
 
 def backtracking(formula, assignment, heuristic):
     # print(assignment)
-    # formula, pure_assignment = pure_literal(formula)
-    formula, unit_assignment = unit_propagation(formula)
-    assignment = assignment + unit_assignment # + pure_assignment
+    if not heuristic == naive_sat_solver:
+        formula, pure_assignment = pure_literal(formula)
+        formula, unit_assignment = unit_propagation(formula)
+        assignment = assignment + unit_assignment + pure_assignment
+
     if formula == - 1:
         return []
     if not formula:
@@ -135,6 +137,7 @@ def backtracking(formula, assignment, heuristic):
 
 def heuristics_dict(heuristic):
     heuristics = {
+        'NV'    : naive_sat_solver,
         'JW'    : jeroslow_wang,
         'RAN'   : random_selection,
         'MO'    : most_often,
@@ -148,6 +151,9 @@ def heuristics_dict(heuristic):
         sys.exit("ERROR: '{}' Not valid heuristic.".format(heuristic) +
                  "\nValid heuristics: {}".format(heuristics.keys()))
 
+def naive_sat_solver(formula):
+    counter = get_counter(formula)
+    return random.choice(counter.keys())
 
 def random_selection(formula):
     counter = get_counter(formula)
@@ -195,25 +201,43 @@ def max_key_value(counter):
 # Main
 
 def main():
+    heuristic_name = ""
+
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         sys.exit("Use: %s <cnf_file> [<branching_heuristic>]" % sys.argv[0])
 
     if len(sys.argv) == 3:
         heuristic = heuristics_dict(sys.argv[2])
+        heuristic_name = sys.argv[2]
     else:
-        heuristic = jeroslow_wang
+        heuristic = random_selection
+        heuristic_name = "RAN"
+
+    import time; start_time = time.time()
 
     clauses, n_vars = parse(sys.argv[1])
 
     solution = backtracking(clauses, [], heuristic)
 
+    status = ""
+
     if solution:
         solution += [x for x in range(1, n_vars + 1) if x not in solution and -x not in solution]
         solution.sort(key=abs)
-        print('s SATISFIABLE')
-        print('v ' + ' '.join([str(x) for x in solution]) + ' 0')
+        # print('s SATISFIABLE')
+        # print('v ' + ' '.join([str(x) for x in solution]) + ' 0')
+        status = "sat"
     else:
-        print('s UNSATISFIABLE')
+        # print('s UNSATISFIABLE')
+        status = "unsat"
+
+    elapsed_time = (time.time() - start_time)
+
+    print("%d,%d,%s,%s,%f" % (n_vars, len(clauses), heuristic_name, status, elapsed_time))
+
+    # print("branching heuristic: \t %s" % heuristic_name)
+    # print("number of clauses: \t %d" % len(clauses))
+    # print("time elapsed: \t\t %s seconds" % (time.time() - start_time))
 
 if __name__ == '__main__':
     main()

@@ -102,6 +102,9 @@ def backtracking(formula, assignment):
 
 def main():
     clauses, nvars = parse(sys.argv[1])
+
+    import time; start_time = time.time()
+
     solution = backtracking(clauses, [])
     if solution:
         solution += [x for x in range(1, nvars + 1) if x not in solution and -x not in solution]
@@ -111,6 +114,7 @@ def main():
     else:
         print('s UNSATISFIABLE')
 
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 if __name__ == '__main__':
     main()
